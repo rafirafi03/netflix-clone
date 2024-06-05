@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import MovieItem from './MovieItem';
 
+// eslint-disable-next-line react/prop-types
 const MovieRow = ({title, url}) => {
 
   const [movies, setMovies] = useState([]);

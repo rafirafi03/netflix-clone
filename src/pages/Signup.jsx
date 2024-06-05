@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import UserAuth  from '../context/AuthContext';
 
@@ -7,14 +7,46 @@ const Signup = () => {
   const [rememberLogin, setRememberLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [passError, setPassError] = useState('');
 
   const {user, signUp} = UserAuth();
   const navigate = useNavigate();
+
+  useEffect(()=> {
+    if(user) {
+      navigate('/')
+    }
+  },[])
 
   const handleFormSubmit = async (e)=> {
     e.preventDefault()
 
     try {
+
+      setEmailError('');
+    setPassError('');
+
+    let valid = true;
+
+    if (email.trim() === '') {
+      setEmailError('Enter email !!');
+      valid = false;
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      setEmailError('Email format is invalid');
+      valid = false;
+    }
+
+    if (password.trim() === '') {
+      setPassError('Enter password');
+      valid = false;
+    } else if (password.length < 6) {
+      setPassError('Minimum 6 characters required');
+      valid = false;
+    }
+
+    if (!valid) return;
+    
       await signUp(email, password)
       navigate('/')
     } catch (error) {
@@ -49,6 +81,8 @@ const Signup = () => {
                  onChange={(e) => setEmail(e.target.value)}
                 />
 
+                <p className='text-danger'>{emailError}</p>
+
                 <input
                  className='p-3 my-2 bg-gray-700 rounded' 
                  type="password" 
@@ -57,6 +91,8 @@ const Signup = () => {
                  value={password}
                  onChange={(e) => setPassword(e.target.value)} 
                 />
+
+                <p className='text-danger'>{passError}</p>
 
                 <button className='bg-red-600 py-3 my-3 rounded font-nsans-bold'>
                   Sign Up

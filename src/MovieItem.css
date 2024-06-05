@@ -1,0 +1,8 @@
+.movie-container {
+    opacity: 0;
+    
+}
+
+.movie-container:hover {
+    opacity: 1;
+}

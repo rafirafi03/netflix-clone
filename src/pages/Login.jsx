@@ -1,19 +1,52 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import { UserAuth } from '../context/AuthContext';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Login = () => {
   const [rememberLogin, setRememberLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [emailError, setEmailError] = useState('')
+  const [passError, setPassError] = useState('');
 
   const {user, login} = UserAuth();
   const navigate = useNavigate();
 
+  useEffect(()=> {
+    if(user) {
+      navigate('/')
+    }
+  },[])
+
   const handleFormSubmit = async (e)=> {
-    e.preventDefault()
+    e.preventDefault();
+
+    setEmailError('');
+    setPassError('');
+
+    let valid = true;
+
+    if (email.trim() === '') {
+      setEmailError('Enter email !!');
+      valid = false;
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      setEmailError('Email format is invalid');
+      valid = false;
+    }
+
+    if (password.trim() === '') {
+      setPassError('Enter password');
+      valid = false;
+    } else if (password.length < 6) {
+      setPassError('Minimum 6 characters required');
+      valid = false;
+    }
+
+    if (!valid) return;
     
     try {
+
       await login(email,password)
       navigate('/')
     } catch (error) {
@@ -48,6 +81,8 @@ const Login = () => {
                  onChange={(e) => setEmail(e.target.value)}
                 />
 
+                <p className='text-danger'>{emailError}</p>
+
                 <input
                  className='p-3 my-2 bg-gray-700 rounded' 
                  type="password" 
@@ -56,6 +91,8 @@ const Login = () => {
                  value={password}
                  onChange={(e) => setPassword(e.target.value)} 
                 />
+
+                <p className='text-danger'>{passError}</p>
 
                 <button className='bg-red-600 py-3 my-3 rounded font-nsans-bold'>
                   Login
