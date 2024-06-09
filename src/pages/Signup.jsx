@@ -25,7 +25,7 @@ const Signup = () => {
     try {
 
       setEmailError('');
-    setPassError('');
+      setPassError('');
 
     let valid = true;
 
@@ -129,3 +129,4 @@ const Signup = () => {
 }
 
 export default Signup
+
